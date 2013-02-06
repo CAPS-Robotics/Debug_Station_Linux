@@ -1,0 +1,99 @@
+/*
+ ** listener.c -- a datagram sockets "server" demo
+ */
+
+#include "headers/headers.h"
+
+union {
+	struct {
+		float f1;
+		float f2;
+		float f3;
+	};
+	char fb[12];
+} data;
+char temp[12];
+char *conreqresp = "DONT";
+
+int networking(void)
+{
+	int sockfd;
+	int rv;
+	struct sockaddr_storage their_addr, blank;
+	socklen_t addr_len;
+	struct addrinfo hints;
+	struct addrinfo *servinfo;  // will point to the result
+
+	memset(&hints, 0, sizeof hints); // make sure the struct is empty
+	hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
+	hints.ai_socktype = SOCK_DGRAM; // TCP stream sockets
+	hints.ai_flags = AI_PASSIVE;     // fill in my IP for me
+
+	if ((rv = getaddrinfo(NULL, "2410", &hints, &servinfo)) != 0) {
+		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(rv));
+		exit(1);
+	}
+
+	//get socket
+	if ((sockfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
+		perror("listener: socket");
+		exit(1);
+	}
+
+	if (bind(sockfd, servinfo->ai_addr, servinfo->ai_addrlen) == -1) {
+		close(sockfd);
+		perror("listener: bind");
+		exit(1);
+	}
+
+	freeaddrinfo(servinfo);
+
+	printf("listener: waiting to recvfrom...\n");
+
+	addr_len = sizeof(their_addr);
+
+	int mode = 0;
+
+	do{
+		if (mode == 0){
+			rv = recvfrom(sockfd, data.fb, sizeof(data), 0, (struct sockaddr *)&their_addr, &addr_len);
+			if (rv == -1){
+				break;
+			}
+			if (strncmp(data.fb, "connReq", 7) == 0){
+				rv = sendto(sockfd, "OKGO", 4, 0, (struct sockaddr *)&their_addr, addr_len);
+			}
+			if(strncmp(data.fb, "connLock", 8) == 0){
+				mode = 1;
+				connect(sockfd, (struct sockaddr *)&their_addr, addr_len);
+			}
+		} else if (mode == 1){
+			rv = recv(sockfd, data.fb, sizeof(data), 0);
+			if(strncmp(data.fb, "connUnLock", 10) == 0){
+				their_addr.ss_family = AF_UNSPEC;
+				connect(sockfd, (struct sockaddr *)&their_addr, addr_len);
+				mode = 0;
+			} else {
+				printf("Move:\t%5.3f\tSlide:\t%5.3f\tSpin:\t%5.3f\n", data.f1, data.f2, data.f3);
+			}
+		}
+	} while (1);
+	close(sockfd);
+
+	return 0;
+}
+
+UDP_Socket::UDP_Socket()
+{
+
+}
+
+UDP_Socket::UDP_Socket(std::string port_data)
+{
+
+}
+
+UDP_Socket::~UDP_Socket()
+{
+
+}

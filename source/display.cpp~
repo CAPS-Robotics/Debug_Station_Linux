@@ -1,0 +1,222 @@
+#include "headers/headers.h"
+
+void render()
+{
+	keyOps();
+
+    glClearColor( 1.f, 1.f, 1.f, 1.f );
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    graph_values_3D();
+    graph_values_2D();
+
+    display_values_text();
+
+    glutSwapBuffers();
+}
+
+/*********************************
+The Points are organized like this
+
+  1
+3   4
+  2
+
+The z axis has point 5 in the rear
+and point 6 in the front
+*********************************/
+
+void display_values_text()
+{
+    /*
+    LTexture valueTextures[6][4];
+    std::ifstream digits[6][4];
+
+    char* buffer;
+
+    for(int i = 0; i < 6; i++)
+    {
+        sprintf(buffer, "%f", values[i]);
+
+        for(int j = 0; j < 1; j++)
+        {
+            std::string conversion = buffer;
+            switch(atoi(conversion.substr(j, j + 1).c_str()))
+            {
+
+            }
+        }
+    }
+
+    delete [] buffer;
+    */
+
+    //LTexture test;
+    //test.loadTextureFromFile("resources/graphics/numbers/8.png");
+    //test.render(10, 10, 0);
+}
+
+void graph_values_3D()
+{
+    glLoadIdentity();
+    glViewport(0, 0, winWidth/2, winHeight);
+
+    glTranslatef(0.f, 0.f, -5.f);
+    glRotatef(xrot, 0.f, 1.f, 0.f);
+	glRotatef(yrot, 1.f, 0.f, 0.f);
+
+    glBegin(GL_LINES);  //the values in the array are 1 less than the points number (duh)
+        glColor3f(1.f, 0.f, 0.f);
+        glVertex3f( 0.f            ,  1.f + values[0],  0.f            );  //point 1 to 4
+        glVertex3f( 1.f + values[3],  0.f            ,  0.f            );
+
+        glVertex3f( 1.f + values[3],  0.f            ,  0.f            );  //point 4 to 2
+        glVertex3f( 0.f            , -1.f - values[1],  0.f            );
+
+        glColor3f(0.f, 0.5f, 0.f);
+        glVertex3f( 0.f            , -1.f - values[1],  0.f            );  //point 2 to 3
+        glVertex3f(-1.f - values[2],  0.f            ,  0.f            );
+
+        glVertex3f(-1.f - values[2],  0.f            ,  0.f            );  //point 3 to 1
+        glVertex3f( 0.f            ,  1.f + values[0],  0.f            );
+
+        glColor3f(0.f, 0.f, 1.f);
+        glVertex3f( 0.f            ,  1.f + values[0],  0.f            );  //point 1 to 5
+        glVertex3f( 0.f            ,  0.f            , -1.f - values[4]);
+
+        glVertex3f( 0.f            ,  0.f            , -1.f - values[4]);  //point 5 to 2
+        glVertex3f( 0.f            , -1.f - values[1],  0.f            );
+
+        glColor3f(1.f, 0.f, 1.f);
+        glVertex3f( 0.f            ,  1.f + values[0],  0.f            );  //point 1 to 6
+        glVertex3f( 0.f            ,  0.f            ,  1.f + values[5]);
+
+        glVertex3f( 0.f            ,  0.f            ,  1.f + values[5]);  //point 6 to 2
+        glVertex3f( 0.f            , -1.f - values[1],  0.f            );
+    glEnd();
+
+	if(points)
+	{
+		glBegin(GL_POINTS);
+			glColor3f(0.f, 0.f, 0.f);
+			glVertex3f(0.f, 1.f+values[0], 0.f);
+			glVertex3f(0.f, -1.f-values[1], 0.f);
+
+			glColor3f(0.f, .5f, 0.f);
+			glVertex3f(-1.f - values[2], 0.f, 0.f);
+
+			glColor3f(1.f, 0.f, 0.f);
+			glVertex3f(1.f + values[3], 0.f, 0.f);
+
+			glColor3f(0.f, 0.f, 1.f);
+			glVertex3f(0.f, 0.f, -1 - values[4]);
+
+			glColor3f(1.f, 0.f, 1.f);
+			glVertex3f(0.f, 0.f, 1.f + values[5]);
+		glEnd();
+	}
+
+	if(axis)
+	{
+		glColor3f(1.f, 0.f, 0.f);
+		glBegin(GL_LINES);
+			glVertex3f(-10.f, 0.f, 0.f);
+			glVertex3f(10.f, 0.f, 0.f);
+
+			glVertex3f(0.f, -10.f, 0.f);
+			glVertex3f(0.f, 10.f, 0.f);
+
+			glVertex3f(0.f, 0.f, -10.f);
+			glVertex3f(0.f, 0.f, 10.f);
+		glEnd();
+	}
+}
+
+void graph_values_2D()
+{
+    glLoadIdentity();
+    glViewport(winWidth/2, 0, winWidth/2, winHeight);
+    //glOrtho( winWidth/2, winWidth, winHeight, 0.0, 0, -1 );
+    //gluOrtho2D(winWidth/2, winWidth, winHeight, 0.0);
+
+    glTranslatef(-2.9, -2.9f, -5.f);
+
+    glBegin(GL_LINES);
+        glColor3f(0.f, 0.f, 0.f);
+
+        for(float i = 0; i < 20; i++)
+        {
+            glVertex2d(0.f, (i/2) + 0.5f);
+            glVertex2d(7.25f, (i/2) + 0.5f);
+        }
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        glColor3f(0.f, 0.f, 0.f);
+        glVertex2d(0, 0); //vertex one
+        glVertex2d(1, 0);
+        glVertex2d(1, values[0] + 1);
+        glVertex2d(0, values[0] + 1);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        glColor3f(0.f, 0.f, 0.f);
+        glVertex2d(1.25, 0); //vertex two
+        glVertex2d(2.25, 0);
+        glVertex2d(2.25, values[1] + 1);
+        glVertex2d(1.25, values[1] + 1);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        glColor3f(0.f, 0.5f, 0.f);
+        glVertex2d(2.5, 0); //vertex three
+        glVertex2d(3.5, 0);
+        glVertex2d(3.5, values[2] + 1);
+        glVertex2d(2.5, values[2] + 1);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        glColor3f(1.f, 0.f, 0.f);
+        glVertex2d(3.75, 0); //vertex four
+        glVertex2d(4.75, 0);
+        glVertex2d(4.75, values[3] + 1);
+        glVertex2d(3.75, values[3] + 1);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        glColor3f(1.f, 0.f, 0.f);
+        glVertex2d(3.75, 0); //vertex four
+        glVertex2d(4.75, 0);
+        glVertex2d(4.75, values[3] + 1);
+        glVertex2d(3.75, values[3] + 1);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        glColor3f(0.f, 0.f, 1.f);
+        glVertex2d(5, 0); //vertex five
+        glVertex2d(6, 0);
+        glVertex2d(6, values[4] + 1);
+        glVertex2d(5, values[4] + 1);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+        glColor3f(12.f, 0.f, 1.f);
+        glVertex2d(6.25, 0); //vertex six
+        glVertex2d(7.25, 0);
+        glVertex2d(7.25, values[5] + 1);
+        glVertex2d(6.25, values[5] + 1);
+    glEnd();
+}
+
+void reshape (int width, int height) {
+    glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(60, (GLfloat)width / (GLfloat)height, 1.0, 100.0);
+    glMatrixMode(GL_MODELVIEW);
+
+    winHeight = height;
+    winWidth = width;
+}
+

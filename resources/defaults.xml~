@@ -1,0 +1,12 @@
+<one> 0.f </one>
+<two> 0.f </two>
+<three> -.5f </three>
+<four> 1.f </four>
+<five> 0.f </five>
+<six> 3.f </six>
+
+<xrot> 45.f </xrot>
+<yrot> 0.f </xrot>
+
+<xrotStep> 1.5f </xrotStep>
+<yrotStep> 1.5f </yrotStep>

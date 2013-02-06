@@ -1,0 +1,32 @@
+#ifndef NETWORKING_H
+#define NETWORKING_H
+int networking(void);
+
+class UDP_Socket
+{
+	private:
+		union {
+			struct {
+				float f1;
+				float f2;
+				float f3;
+			};
+			char fb[12];
+		} data;
+		
+		std::string port;
+
+		int sockfd;
+		int rv;
+		struct sockaddr_storage their_addr, blank;
+		socklen_t addr_len;
+		struct addrinfo hints;
+		struct addrinfo *servinfo;  // will point to the result
+
+	public:
+		UDP_Socket();
+		UDP_Socket(std::string port_data);
+		~UDP_Socket();
+};
+
+#endif

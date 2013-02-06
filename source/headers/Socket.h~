@@ -1,0 +1,38 @@
+#pragma once
+
+#include "headers.h"
+
+union {
+	struct {
+		float	value;
+		int		slct;
+	};
+	char fb[12];
+} data;
+
+class Socket
+{
+	private:
+		const char *port;
+
+		bool loadFine;
+
+		struct addrinfo hints;
+		struct addrinfo *servinfo;
+		struct sockaddr_storage their_addr, blank;
+		socklen_t addr_len;
+
+		int rv;
+		int sockfd;
+
+		char buf[12];
+
+	public:
+		Socket();
+		Socket(const char *portParam);
+		~Socket();
+
+		int init(const char *portParam);
+
+		int listen();
+};

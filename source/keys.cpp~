@@ -1,0 +1,73 @@
+#include "headers/headers.h"
+
+bool keyStates[256];
+bool specialKeyStates[256];
+
+bool points = true;
+bool pointsBuf = false;
+
+void keyPressed (unsigned char key, int x, int y) {
+    keyStates[key] = true;
+}
+
+void keyUp (unsigned char key, int x, int y) {
+    keyStates[key] = false;
+}
+
+void specialKeyPressed(int key, int x, int y) {
+    specialKeyStates[key] = true;
+}
+
+void specialKeyUp(int key, int x, int y) {
+    specialKeyStates[key] = false;
+}
+
+void keyOps()
+{
+    if(keyStates['a'])
+	{
+		xrot -= xrotStep;
+	}
+
+	if(keyStates['d'])
+	{
+		xrot += xrotStep;
+	}
+
+	if(keyStates['w'])
+	{
+		yrot += yrotStep;
+	}
+
+	if(keyStates['s'])
+	{
+		yrot -= yrotStep;
+	}
+
+	if(keyStates['q'])
+	{
+		yrot = 0;
+		xrot = 45;
+	}
+
+	if(keyStates['1'])
+	{
+		if(pointsBuf == false)
+		{
+			if(points) {
+				points = false;
+			}
+			else 
+			{
+				points = true;
+			}
+			pointsBuf = true;
+		}
+	}
+
+	if(!keyStates['1'])
+	{
+		pointsBuf = false;
+	}
+}
+
